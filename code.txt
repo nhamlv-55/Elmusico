@@ -1,0 +1,71 @@
+BEGIN;
+CREATE TABLE `bookmarks_artist` (
+    `ArtistId` integer NOT NULL PRIMARY KEY,
+    `ArtistName` longtext NOT NULL,
+    `Date` datetime NOT NULL,
+    `Status` longtext NOT NULL
+)
+;
+CREATE TABLE `bookmarks_album` (
+    `ASIN` varchar(10) NOT NULL PRIMARY KEY,
+    `AlbumName` longtext NOT NULL,
+    `ContributingArtists_id` integer NOT NULL,
+    `ReleaseDate` datetime NOT NULL,
+    `Label` longtext NOT NULL,
+    `Genre` longtext NOT NULL
+)
+;
+ALTER TABLE `bookmarks_album` ADD CONSTRAINT `ContributingArtists_id_refs_ArtistId_d4308b7c` FOREIGN KEY (`ContributingArtists_id`) REFERENCES `bookmarks_artist` (`ArtistId`);
+CREATE TABLE `bookmarks_song` (
+    `SongId` integer NOT NULL PRIMARY KEY,
+    `ASIN_id` varchar(10) NOT NULL,
+    `TrackId` integer NOT NULL UNIQUE,
+    `ContributingArtists_id` integer NOT NULL,
+    `Genre` longtext NOT NULL,
+    `Composer` longtext NOT NULL
+)
+;
+ALTER TABLE `bookmarks_song` ADD CONSTRAINT `ASIN_id_refs_ASIN_74d06d27` FOREIGN KEY (`ASIN_id`) REFERENCES `bookmarks_album` (`ASIN`);
+ALTER TABLE `bookmarks_song` ADD CONSTRAINT `ContributingArtists_id_refs_ArtistId_6ddacdb9` FOREIGN KEY (`ContributingArtists_id`) REFERENCES `bookmarks_artist` (`ArtistId`);
+CREATE TABLE `bookmarks_video` (
+    `VideoId` integer NOT NULL PRIMARY KEY,
+    `SongId_id` integer NOT NULL,
+    `Type` longtext NOT NULL,
+    `Url` varchar(200) NOT NULL
+)
+;
+ALTER TABLE `bookmarks_video` ADD CONSTRAINT `SongId_id_refs_SongId_d96228b5` FOREIGN KEY (`SongId_id`) REFERENCES `bookmarks_song` (`SongId`);
+CREATE TABLE `bookmarks_scoresheet` (
+    `ScoreId` integer NOT NULL PRIMARY KEY,
+    `SongId_id` integer NOT NULL,
+    `Version` integer NOT NULL,
+    `Instrument` longtext NOT NULL
+)
+;
+ALTER TABLE `bookmarks_scoresheet` ADD CONSTRAINT `SongId_id_refs_SongId_9d2cee45` FOREIGN KEY (`SongId_id`) REFERENCES `bookmarks_song` (`SongId`);
+CREATE TABLE `bookmarks_musician` (
+    `MusicianId` integer NOT NULL PRIMARY KEY,
+    `MusicianName` longtext NOT NULL,
+    `DOB` datetime NOT NULL
+)
+;
+CREATE TABLE `bookmarks_member` (
+    `RelationshipId` integer NOT NULL PRIMARY KEY,
+    `ArtistId_id` integer NOT NULL,
+    `MusicianId_id` integer NOT NULL,
+    `Role` longtext NOT NULL,
+    `Time` datetime NOT NULL
+)
+;
+ALTER TABLE `bookmarks_member` ADD CONSTRAINT `MusicianId_id_refs_MusicianId_87cc60b1` FOREIGN KEY (`MusicianId_id`) REFERENCES `bookmarks_musician` (`MusicianId`);
+ALTER TABLE `bookmarks_member` ADD CONSTRAINT `ArtistId_id_refs_ArtistId_a4fd2ffe` FOREIGN KEY (`ArtistId_id`) REFERENCES `bookmarks_artist` (`ArtistId`);
+CREATE TABLE `bookmarks_favorite` (
+    `FavoriteId` integer NOT NULL PRIMARY KEY,
+    `user_id` integer NOT NULL,
+    `ScoreSheet_id` integer NOT NULL
+)
+;
+ALTER TABLE `bookmarks_favorite` ADD CONSTRAINT `user_id_refs_id_390ffc60` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+ALTER TABLE `bookmarks_favorite` ADD CONSTRAINT `ScoreSheet_id_refs_ScoreId_c5cd5741` FOREIGN KEY (`ScoreSheet_id`) REFERENCES `bookmarks_scoresheet` (`ScoreId`);
+
+COMMIT;
