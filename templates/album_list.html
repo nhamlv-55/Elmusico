@@ -1,0 +1,34 @@
+
+{% if albums %}
+<h1>Matched albums</h1>
+<ul class="albums">
+	{% for album in albums %}
+	<li>
+	<a href="{{ album.AlbumName.url }}" class="title">
+			{{ album.AlbumName }}</a>
+			<br />
+			{% if show_tags %}
+			Tags:
+			{% if album.tag_set.all %}
+			<ul class="tags">
+				{% for tag in album.tag_set.all %}
+				<li>{{ tag.name }}</li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			None.
+			{% endif %}
+			<br />
+			{% endif %}
+			{% if show_user %}
+			Posted by:
+			<a href="/user/{{ album.user.username }}/"
+			class="username">
+			{{ album.user.username }}</a>
+			{% endif %}
+		</li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<p>No albums found.</p>
+	{% endif %}

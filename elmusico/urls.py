@@ -20,11 +20,19 @@ urlpatterns = patterns('',
     (r'^$', main_page),
     # \w: alphanumeric characters with underscore
     (r'^user/(\w+)/$', user_page),
+    # session manager part
     (r'^login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', logout_page),
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': site_media }),
     (r'^register/$', register_page),
     (r'^register/success/$',
         TemplateView.as_view(template_name='registration/register_success.html')),
+    # DML part
+    (r'^create_artist/$', artist_save_page),
+    (r'^create_musician/$', musician_save_page),
+    (r'^create_album/$', album_save_page),
+
+    # querry part
+    (r'^search/$', search_page),
     url(r'^admin/', include(admin.site.urls)),
 )

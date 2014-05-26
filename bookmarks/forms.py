@@ -2,7 +2,7 @@ import re
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django import forms
-
+from models import *
 class RegistrationForm(forms.Form):
 	username = forms.CharField(label='Username', max_length=30)
 	# email = forms.EmailField(label='Email')
@@ -40,10 +40,58 @@ class RegistrationForm(forms.Form):
 # 	Type = models.TextField()
 # 	Url = models.URLField()
 
-class VideoSaveForm(forms.Form):
-	url = forms.URLField(
-		label='VideoURL'
+class ArtistSaveForm(forms.Form):
+	name = forms.CharField(
+		label='Artist Name',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+	date= forms.DateField(
+		label= 'Debut',
+		widget = forms.DateInput(attrs = {'size': 64})
+		)
+	status = forms.CharField(
+		label = 'Status',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+	
+class MusicianSaveForm(forms.Form):
+	name = forms.CharField(
+		label='Musician Name',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+	dob= forms.DateField(
+		label= 'Birthday',
+		widget = forms.DateInput(attrs = {'size': 64})
+		)
+	
+class AlbumSaveForm(forms.Form):
+	name = forms.CharField(
+		label='Album Name',
 		widget = forms.TextInput(attrs = {'size': 64})
 		)
 
+	contributing_artist = forms.ModelChoiceField(
+		queryset=Artist.objects.all()
+		)
+
 	
+	release_date= forms.DateField(
+		label= 'Release Date',
+		widget = forms.DateInput(attrs = {'size': 64})
+		)
+
+	label = forms.CharField(
+		label='Label',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+
+	genre = forms.CharField(
+		label='Genre',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+
+class SearchForm(forms.Form):
+	query = forms.CharField(
+	label='Enter a keyword to search for',
+	widget=forms.TextInput(attrs={'size': 32})
+	)

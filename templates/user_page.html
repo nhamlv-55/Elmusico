@@ -3,17 +3,7 @@
 {% block title %}{{ username }}{% endblock %}
 {% block head %}{{ username }}'s favorite{% endblock %}
 {% block content %}
-	{% if bookmarks %}
-		<ul>
-			{% for aScoreSheet in ScoreSheetList %}
-			<li>
-				<a href="{{ aScoreSheet.Scoresheet.Url }}">{{ bookmark.title }}</a>
-			</li>
-			{% endfor %}
-		</ul>
-	{% else %}
-		<p>No bookmarks found.</p>
-{% endif %}
+	{% include "bookmark_list.html" %}
 {% endblock %}
 
 <!-- <html>
