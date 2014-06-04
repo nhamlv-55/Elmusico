@@ -31,8 +31,13 @@ urlpatterns = patterns('',
     (r'^create_artist/$', artist_save_page),
     (r'^create_musician/$', musician_save_page),
     (r'^create_album/$', album_save_page),
-
+    (r'^create_song/$', song_save_page_step1),
+    (r'^create_song_step2/(\w+)/$', song_save_page_step2),
+    (r'^create_video/$', video_save_page),
     # querry part
     (r'^search/$', search_page),
+    (r'^album/(\w+)/$', album_page),
+    (r'^artist/(\w+)/$', artist_page),
+    (r'^song/(\w+)/$', song_page),
     url(r'^admin/', include(admin.site.urls)),
 )

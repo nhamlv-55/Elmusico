@@ -1,0 +1,34 @@
+
+{% if songs %}
+<h1>Matched songs</h1>
+<ul class="songs">
+	{% for song in songs %}
+	<li>
+	<a href="/songs/{{ song.SongId }}" class="title">
+			{{ song.SongName }}</a>
+			<br />
+			{% if show_tags %}
+			Tags:
+			{% if song.tag_set.all %}
+			<ul class="tags">
+				{% for tag in song.tag_set.all %}
+				<li>{{ tag.name }}</li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			None.
+			{% endif %}
+			<br />
+			{% endif %}
+			{% if show_user %}
+			Posted by:
+			<a href="/user/{{ song.user.username }}/"
+			class="username">
+			{{ song.user.username }}</a>
+			{% endif %}
+		</li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<p>No songs found.</p>
+	{% endif %}

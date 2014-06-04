@@ -90,8 +90,139 @@ class AlbumSaveForm(forms.Form):
 		widget = forms.TextInput(attrs = {'size': 64})
 		)
 
+class SongSaveForm(forms.Form):
+	name = forms.CharField(
+		label='Song Name',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+
+	asin = forms.ModelChoiceField(
+		label = 'Album',
+		queryset=Album.objects.all()
+		)
+
+
+	contributing_artist = forms.ModelChoiceField(
+		label = 'ContributingArtists',
+		queryset=Artist.objects.all()
+		)
+
+	trackid = forms.IntegerField(
+		label='Track ID',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+
+	composer = forms.ModelChoiceField(
+		label='Composer',
+		queryset=Artist.objects.all()
+		)
+
+	genre = forms.CharField(
+		label='Genre',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+
+class SongSaveForm_step1(forms.Form):
+	contributing_artist = forms.ModelChoiceField(
+		label = 'ContributingArtists',
+		queryset=Artist.objects.all()
+		)
+
+class SongSaveForm_step2(forms.Form):
+    
+    asin = forms.ModelChoiceField(queryset=Album.objects.all())
+    def __init__(self, *args, **kwargs):
+        artistId = kwargs.pop('ContributingArtists', None)
+        super(SongSaveForm_step2, self).__init__(*args, **kwargs)
+
+        if artistId:
+            self.fields['asin'].queryset = Album.objects.filter(ContributingArtists__ArtistId = artistId)
+
+    name = forms.CharField(
+		label='Song Name',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+    trackid = forms.IntegerField(
+		label='Track ID',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+    composer = forms.ModelChoiceField(
+		label='Composer',
+		queryset=Artist.objects.all()
+		)
+    genre = forms.CharField(
+		label='Genre',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+# class SongSaveForm_step2(forms.Form):
+
+# 	asin = forms.ModelChoiceField(
+# 		label = 'Album',
+# 		queryset=Album.objects.all()
+# 		)
+
+# 	def __init__(self, *args, **kwargs):
+# 		artist = kwargs.pop('contributing_artist', None)
+#         # print artist
+#         super(SongSaveForm_step2, self).__init__(*args, **kwargs)
+
+#         if artist:
+#             self.fields['asin'].queryset = Album.objects.filter(ContributingArtists__ArtistName = artist_name)
+
+
+# 	name = forms.CharField(
+# 		label='Song Name',
+# 		widget = forms.TextInput(attrs = {'size': 64})
+# 		)
+
+# 	trackid = forms.IntegerField(
+# 		label='Track ID',
+# 		widget = forms.TextInput(attrs = {'size': 64})
+# 		)
+
+# 	composer = forms.ModelChoiceField(
+# 		label='Composer',
+# 		queryset=Artist.objects.all()
+# 		)
+
+# 	genre = forms.CharField(
+# 		label='Genre',
+# 		widget = forms.TextInput(attrs = {'size': 64})
+# 		)
+
+
+class VideoSaveForm(forms.Form):
+	song = forms.ModelChoiceField(
+		label = 'Song',
+		queryset=Song.objects.all()
+		)
+	video_type= forms.CharField(
+		label= 'Type',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+	url = forms.URLField(
+		label= 'URL',
+		widget = forms.TextInput(attrs = {'size': 64}))
+# class VideoSaveForm(forms.Form):
+
+# 	songid = forms.ModelChoiceField(
+# 		label = 'Song',
+# 		queryset=Song.objects.all()
+# 		)
+
+# 	video_type = forms.CharField(
+# 		label='Type',
+# 		widget = forms.TextInput(attrs = {'size': 64})
+# 		)
+
+# 	url = forms.CharField(
+# 		label='URL',
+# 		widget = forms.TextInput(attrs = {'size': 64})
+# 		)
+
+
 class SearchForm(forms.Form):
 	query = forms.CharField(
-	label='Enter a keyword to search for',
+	label='Enter anything to search',
 	widget=forms.TextInput(attrs={'size': 32})
 	)

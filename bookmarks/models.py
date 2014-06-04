@@ -20,16 +20,22 @@ class Album(models.Model):
 	ReleaseDate = models.DateField()
 	Label = models.TextField()
 	Genre = models.TextField()
+	def __unicode__(self):
+		return self.AlbumName
 
 
 
 class Song(models.Model):
 	SongId = models.AutoField(primary_key = True)
+	SongName = models.TextField()
 	ASIN = models.ForeignKey(Album)
 	TrackId = models.IntegerField(unique = True)
-	ContributingArtists = models.ForeignKey(Artist, to_field = 'ArtistId')
+	ContributingArtists = models.ForeignKey(Artist, related_name='contributing_artist')
 	Genre = models.TextField()
-	Composer = models.TextField()
+	Composer = models.ForeignKey(Artist, related_name = 'composer')
+
+	def __unicode__(self):
+		return '%s by %s' % (self.SongName, self.ContributingArtists)
 
 
 class Video(models.Model):

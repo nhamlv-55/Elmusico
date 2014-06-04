@@ -147,10 +147,98 @@ def album_save_page(request):
 			})
 		return render_to_response('album_save.html', variables)
 
+def song_save_page(request):
+	if request.method == 'POST':
+		form = SongSaveForm(request.POST)
+		if form.is_valid():
+			# Create or get link.
+			song, created = Song.objects.get_or_create(
+				SongName=form.cleaned_data['name'],
+				ASIN = form.cleaned_data['asin'],
+				TrackId = form.cleaned_data['trackid'],
+				ContributingArtists = form.cleaned_data['contributing_artist'],
+				Genre = form.cleaned_data['genre'],
+				Composer = form.cleaned_data['composer']
+				)
+			song.save()
+			return HttpResponseRedirect(
+				'/user/%s/' % request.user.username
+			)
+	else:
+		form = SongSaveForm()
+		variables = RequestContext(request, {
+			'form': form
+			})
+		return render_to_response('song_save.html', variables)
+
+def song_save_page_step1(request):
+	if request.method == 'POST':
+		form = SongSaveForm_step1(request.POST)
+		if form.is_valid():
+			ContributingArtists = form.cleaned_data['contributing_artist'].ArtistId
+			print ContributingArtists
+			t=HttpResponseRedirect(
+				'/create_song_step2/%s/' %ContributingArtists
+			)
+			print t
+			return t
+	else:
+		form = SongSaveForm_step1()
+		variables = RequestContext(request, {
+			'form': form
+			})
+		return render_to_response('song_save_step1.html', variables)
+
+def song_save_page_step2(request, contributing_artist):
+	print "DSADASDSADSA"
+	if request.method == 'POST':
+		form = SongSaveForm_step2(request.POST, ContributingArtists = contributing_artist)
+		if form.is_valid():
+			print "vl"
+			# Create or get link.
+			song, created = Song.objects.get_or_create(
+				SongName=form.cleaned_data['name'],
+				ASIN = form.cleaned_data['asin'],
+				TrackId = form.cleaned_data['trackid'],
+				ContributingArtists = Artist.objects.get(ArtistId=contributing_artist),
+				Genre = form.cleaned_data['genre'],
+				Composer = form.cleaned_data['composer']
+				)
+			song.save()
+			return HttpResponseRedirect(
+				'/song/%s/' % song.SongId
+			)
+	else:
+		print "X"
+		form = SongSaveForm_step2(ContributingArtists = contributing_artist)
+		print form
+		print "X2"
+		variables = RequestContext(request, {
+			'form': form
+			})
+		print form
+		print "X3"
+		return render_to_response('song_save_step2.html', variables)
+
+def video_save_page(request):
+	if request.method == 'POST':
+		form = VideoSaveForm(request.POST)
+		if form.is_valid():
+			return HttpResponseRedirect(
+				'/user/%s/' % request.user.username
+			)
+	else:
+		form = VideoSaveForm()
+		variables = RequestContext(request, {
+			'form': form
+			})
+		return render_to_response('video_save.html', variables)
+
 def search_page(request):
 	form = SearchForm()
 	artists = []
 	albums = []
+	songs = []
 
 	show_results = False
 	if request.GET.has_key('query'):
@@ -160,11 +248,90 @@ def search_page(request):
 			form = SearchForm({'query' : query})
 			artists = Artist.objects.filter (ArtistName__icontains=query)[:10]
 			albums = Album.objects.filter (AlbumName__icontains=query)[:10]
+			songs = Song.objects.filter(SongName__icontains=query)[:10]
+		print songs, artists, albums
 	variables = RequestContext(request, { 'form': form,
 		'artists': artists,
 		'albums': albums,
+		'songs': songs,
 		'show_results': show_results,
 		# 'show_tags': True,
 		# 'show_user': True
 		})
 	return render_to_response('search.html', variables)
+
+def artist_page(request, artist_name):
+	albums=[]
+	try:
+		# print username
+		artist = Artist.objects.get(ArtistName=artist_name)
+		# print "1wsa"
+	except Artist.DoesNotExist:
+		raise Http404('Requested artist not found.')
+
+
+	#The automatically generated JOIN equivalent. To get all 
+	# scoresheet that an user favor
+	# ScoreSheetList = user.favorite_set.all()
+	albums = Album.objects.filter(ContributingArtists__ArtistName = artist_name)
+	# debut = artist.
+
+	template = get_template('artist_page.html')
+	variables = RequestContext(request, {
+		'artist_name': artist_name,
+		'albums': albums,
+		'artist': artist
+		})
+
+	output = template.render(variables)
+	return render_to_response('artist_page.html', variables)
+
+def album_page(request, album_name):
+	songs=[]
+	try:
+		# print username
+		album = Album.objects.get(AlbumName=album_name)
+		# print "1wsa"
+	except Album.DoesNotExist:
+		raise Http404('Requested album not found.')
+
+
+	#The automatically generated JOIN equivalent. To get all 
+	# scoresheet that an user favor
+	# ScoreSheetList = user.favorite_set.all()
+	songs = Song.objects.filter(ASIN_id__AlbumName = album_name)
+	# debut = artist.
+
+	template = get_template('album_page.html')
+	variables = RequestContext(request, {
+		'album_name': album_name,
+		'songs': songs,
+		'album': album
+		})
+
+	output = template.render(variables)
+	return render_to_response('album_page.html', variables)
+
+def song_page(request, song_id):
+	tabs=[]
+	try:
+		# print username
+		song = Song.objects.get(SongId=song_id)
+		# print "1wsa"
+	except Song.DoesNotExist:
+		raise Http404('Requested song not found.')
+
+
+	#The automatically generated JOIN equivalent. To get all 
+	# scoresheet that an user favor
+	# ScoreSheetList = user.favorite_set.all()
+	# tabs = ScoreSheet.objects.filter(ContributingArtists__ArtistName = artist_name)
+	# debut = artist.
+
+	template = get_template('song_page.html')
+	variables = RequestContext(request, {
+		'song_name': song.SongName
+		})
+
+	output = template.render(variables)
+	return render_to_response('song_page.html', variables)

@@ -1,9 +1,24 @@
-{% extends "base.html" %}
-{% block title %}Create an album{% endblock %}
-{% block head %}Create an album{% endblock %}
-{% block content %}
-<form method="post" action=".">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="save" />
-</form>
+ {% extends "base.html" %}
+ {% block title %}{{ album_name }}{% endblock %}
+ {% block head %}{{ album_name }}{% endblock %}
+ {% block content %}
+ 	<div id="Info">
+		<h2>Release date</h2>
+		<p>{{ album.ReleaseDate}}</p>
+		<h2>Label</h2>
+		<p>{{ album.Label}}</p>
+		<h2>Genre</h2>
+		<p>{{ album.Genre}}</p>
+	</div>
+		<h2>Tracklist</h2>
+	 {% if songs %}
+		 <ul>
+		 	{% for song in songs %}
+			 	<li><a href="/song/{{ song.SongId }}">
+			 		{{ song.SongName }}</a></li>
+		 		{% endfor %}
+		 </ul>
+	{% else %}
+	 	<p>No songs found.</p>
+	{% endif %}
 {% endblock %}

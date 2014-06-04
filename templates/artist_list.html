@@ -4,7 +4,7 @@
 <ul class="artists">
 	{% for artist in artists %}
 	<li>
-	<a href="{{ artist.ArtistName.url }}" class="title">
+	<a href="/artist/{{ artist.ArtistName }}" class="title">
 			{{ artist.ArtistName }}</a>
 			<br />
 			{% if show_tags %}

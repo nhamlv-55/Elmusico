@@ -4,7 +4,7 @@
 <ul class="albums">
 	{% for album in albums %}
 	<li>
-	<a href="{{ album.AlbumName.url }}" class="title">
+	<a href="/album/{{ album.AlbumName }}" class="title">
 			{{ album.AlbumName }}</a>
 			<br />
 			{% if show_tags %}

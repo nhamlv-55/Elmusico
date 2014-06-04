@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Create an artist{% endblock %}
-{% block head %}Create an artist{% endblock %}
+{% block title %}Create a song{% endblock %}
+{% block head %}Create a song{% endblock %}
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
 {{ form.as_p }}
