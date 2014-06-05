@@ -136,12 +136,26 @@ def musician_save_page(request):
 			return HttpResponseRedirect(
 				'/user/%s/' % request.user.username
 			)
+	elif request.GET.has_key('musician_id'):
+		musician_id = request.GET['musician_id']
+		print "elif"
+		try:
+			musician = Musician.objects.get(MusicianId=musician_id)
+			name= musician.MusicianName
+			date= artist.DOB
+		except ObjectDoesNotExist:
+			pass
+		form = MusicianSaveForm({
+			'name': name,
+			'date': date,
+		})
 	else:
 		form = MusicianSaveForm()
-		variables = RequestContext(request, {
-			'form': form
-			})
-		return render_to_response('musician_save.html', variables)
+
+	variables = RequestContext(request, {
+		'form': form
+		})
+	return render_to_response('musician_save.html', variables)
 
 def album_save_page(request):
 	if request.method == 'POST':
@@ -150,21 +164,42 @@ def album_save_page(request):
 			# Create or get link.
 			album, created = Album.objects.get_or_create(
 				AlbumName=form.cleaned_data['name'],
-				ContributingArtists = form.cleaned_data['contributing_artist'],
-				ReleaseDate=form.cleaned_data['release_date'],
-				Label = form.cleaned_data['label'],
-				Genre = form.cleaned_data['genre']
 				)
+			album.ContributingArtists = form.cleaned_data['contributing_artist']
+			album.ReleaseDate=form.cleaned_data['release_date']
+			album.Label = form.cleaned_data['label']
+			album.Genre = form.cleaned_data['genre']
+
 			album.save()
 			return HttpResponseRedirect(
 				'/album/%s/' % album.AlbumId
 			)
+	elif request.GET.has_key('album_id'):
+		album_id = request.GET['album_id']
+		print "elif"
+		try:
+			album = Album.objects.get(AlbumId=album_id)
+			name= album.AlbumName
+			contributing_artist = album.ContributingArtists
+			date= album.ReleaseDate
+			label = album.Label
+			genre= album.Genre
+		except ObjectDoesNotExist:
+			print "doesnt exist"
+			pass
+		form = AlbumSaveForm({
+			'name': name,
+			'release_date': date,
+			'label':label,
+			'genre':genre,
+			# 'contributing_artist':contributing_artist
+		})
 	else:
 		form = AlbumSaveForm()
-		variables = RequestContext(request, {
-			'form': form
-			})
-		return render_to_response('album_save.html', variables)
+	variables = RequestContext(request, {
+		'form': form
+		})
+	return render_to_response('album_save.html', variables)
 
 def song_save_page_step1(request):
 	if request.method == 'POST':
@@ -236,21 +271,35 @@ def video_save_page_step2(request, song_id):
 			# Create or get link.
 			video, created = Video.objects.get_or_create(
 				SongId_id = song_id,
-				Type = form.cleaned_data['video_type'],
-				Url = form.cleaned_data['url']
 				)
+			video.Type = form.cleaned_data['video_type']
+			video.Url = form.cleaned_data['url']
+
 			video.save()
 			return HttpResponseRedirect(
 				'/song/%s/' % song_id
 			)
 		else:
 			print "nvl"
+	elif request.GET.has_key('video_id'):
+		video_id = request.GET['video_id']
+		print "elif"
+		try:
+			video = Video.objects.get(VideoId=video_id)
+			video_type = video.Type
+			url=video.Url
+		except ObjectDoesNotExist:
+			pass
+		form = VideoSaveForm({
+			'video_type':video_type,
+			'url': url
+		})
 	else:
 		form = VideoSaveForm()
-		variables = RequestContext(request, {
-			'form': form
-			})
-		return render_to_response('video_save_step2.html', variables)
+	variables = RequestContext(request, {
+		'form': form
+		})
+	return render_to_response('video_save_step2.html', variables)
 
 def tab_save_page_step1(request):
 	form = SearchForm()
@@ -369,6 +418,7 @@ def album_page(request, album_id):
 
 def song_page(request, song_id):
 	tabs=[]
+	videos=[]
 	try:
 		# print username
 		song = Song.objects.get(SongId=song_id)
@@ -376,10 +426,23 @@ def song_page(request, song_id):
 	except Song.DoesNotExist:
 		raise Http404('Requested song not found.')
 
+	tabs = ScoreSheet.objects.filter(SongId_id__SongId = song_id)
+	videos = Video.objects.filter(SongId_id__SongId = song_id)
+	album = Album.objects.get(AlbumId = song.AlbumId_id)
+	contributing_artist = Artist.objects.get(ArtistId = song.ContributingArtists_id)
+	if len(videos)>0:
+		demo_vid = videos[0].Url
+		demo_vid = demo_vid.split('=')[1]
+	else:
+		demo_vid=False
 	template = get_template('song_page.html')
 	variables = RequestContext(request, {
+		'album': album,
 		'song_name': song.SongName,
-		'video': Video
+		'videos': videos,
+		'tabs':tabs,
+		'demo_vid':demo_vid,
+		'contributing_artist': contributing_artist
 		})
 
 	output = template.render(variables)

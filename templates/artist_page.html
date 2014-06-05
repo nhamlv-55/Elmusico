@@ -1,18 +1,23 @@
  {% extends "base.html" %}
  {% block title %}{{ artist_name }}{% endblock %}
- {% block head %}Bookmarks for {{ artist_name }}{% endblock %}
+ {% block head %}{{ artist_name }}{% endblock %}
  {% block content %}
+ 	<div id="Image">
+ 		<img src= {{ artist.Image }} height="300" >
+ 	</div>
  	<div id="Info">
 		<h2>Debute date</h2>
 		<p>{{ artist.Date}}</p>
 		<h2>Current status</h2>
 		<p>{{ artist.Status}}</p>
+		<h2>Bio</h2>
+		<p>{{ artist.Bio}}</p>
 	</div>
 		<h2>Discography</h2>
 	 {% if albums %}
 		 <ul>
 		 	{% for album in albums %}
-			 	<li><a href="/album/{{ album }}">
+			 	<li><a href="/album/{{ album.AlbumId }}">
 			 		{{ album.AlbumName }}</a></li>
 		 		{% endfor %}
 		 </ul>
