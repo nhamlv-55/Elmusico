@@ -4,7 +4,7 @@
 <ul class="songs">
 	{% for song in songs %}
 	<li>
-	<a href="/song/{{ song.SongId }}" class="title">
+	<a href="/create_video_step2/{{ song.SongId }}" class="title">
 			{{ song.SongName }}</a>
 			<br />
 			{% if show_tags %}
@@ -19,12 +19,6 @@
 			None.
 			{% endif %}
 			<br />
-			{% endif %}
-			{% if show_user %}
-			Posted by:
-			<a href="/user/{{ song.user.username }}/"
-			class="username">
-			{{ song.user.username }}</a>
 			{% endif %}
 		</li>
 		{% endfor %}

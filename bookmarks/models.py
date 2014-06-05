@@ -9,12 +9,13 @@ class Artist(models.Model):
 	ArtistName = models.TextField()
 	Date = models.DateField()
 	Status = models.TextField()
-
+	Bio = models.TextField()
+	Image = models.URLField()
 	def __unicode__(self):
 		return self.ArtistName
 
 class Album(models.Model):
-	ASIN = models.AutoField(primary_key = True)
+	AlbumId = models.AutoField(primary_key = True)
 	AlbumName = models.TextField()
 	ContributingArtists = models.ForeignKey(Artist, to_field = 'ArtistId')
 	ReleaseDate = models.DateField()
@@ -28,8 +29,8 @@ class Album(models.Model):
 class Song(models.Model):
 	SongId = models.AutoField(primary_key = True)
 	SongName = models.TextField()
-	ASIN = models.ForeignKey(Album)
-	TrackId = models.IntegerField(unique = True)
+	AlbumId = models.ForeignKey(Album)
+	TrackId = models.IntegerField()
 	ContributingArtists = models.ForeignKey(Artist, related_name='contributing_artist')
 	Genre = models.TextField()
 	Composer = models.ForeignKey(Artist, related_name = 'composer')
@@ -50,6 +51,7 @@ class ScoreSheet(models.Model):
 	Version = models.IntegerField()
 	Instrument = models.TextField()
 	Url = models.URLField()
+	Tab = models.TextField()
 
 
 

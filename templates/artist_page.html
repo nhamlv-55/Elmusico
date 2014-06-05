@@ -19,4 +19,9 @@
 	{% else %}
 	 	<p>No albums found.</p>
 	{% endif %}
+	
+	{% if user.is_authenticated %}
+	<a href="/create_artist/?artist_id={{ artist.ArtistId }}"
+		class="edit">[edit]</a>
+	{% endif %}
 {% endblock %}

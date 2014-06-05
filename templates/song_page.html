@@ -8,11 +8,16 @@
 		<h2>Current status</h2>
 		<p>{{ artist.Status}}</p>
 	</div>
+	<div id="Clip">
+		<h2>Video</h2>
+		<iframe class="youtube-player" type="text/html" width="640" height="385" src={{"http://www.youtube.com/embed/PBuqjzPh9ys"}} allowfullscreen frameborder="0">
+		</iframe>
+	</div>
 		<h2>Discography</h2>
 	 {% if albums %}
 		 <ul>
 		 	{% for album in albums %}
-			 	<li><a href="/album/{{ album }}">
+			 	<li><a href="/album/{{ album.AlbumId }}">
 			 		{{ album.AlbumName }}</a></li>
 		 		{% endfor %}
 		 </ul>

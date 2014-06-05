@@ -45,6 +45,10 @@ class ArtistSaveForm(forms.Form):
 		label='Artist Name',
 		widget = forms.TextInput(attrs = {'size': 64})
 		)
+	image = forms.CharField(
+		label = 'Image',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
 	date= forms.DateField(
 		label= 'Debut',
 		widget = forms.DateInput(attrs = {'size': 64})
@@ -52,6 +56,11 @@ class ArtistSaveForm(forms.Form):
 	status = forms.CharField(
 		label = 'Status',
 		widget = forms.TextInput(attrs = {'size': 64})
+		)
+	
+	bio = forms.CharField(
+		label = 'Bio',
+		widget = forms.Textarea(attrs={'cols':64,'rows':10})
 		)
 	
 class MusicianSaveForm(forms.Form):
@@ -90,38 +99,6 @@ class AlbumSaveForm(forms.Form):
 		widget = forms.TextInput(attrs = {'size': 64})
 		)
 
-class SongSaveForm(forms.Form):
-	name = forms.CharField(
-		label='Song Name',
-		widget = forms.TextInput(attrs = {'size': 64})
-		)
-
-	asin = forms.ModelChoiceField(
-		label = 'Album',
-		queryset=Album.objects.all()
-		)
-
-
-	contributing_artist = forms.ModelChoiceField(
-		label = 'ContributingArtists',
-		queryset=Artist.objects.all()
-		)
-
-	trackid = forms.IntegerField(
-		label='Track ID',
-		widget = forms.TextInput(attrs = {'size': 64})
-		)
-
-	composer = forms.ModelChoiceField(
-		label='Composer',
-		queryset=Artist.objects.all()
-		)
-
-	genre = forms.CharField(
-		label='Genre',
-		widget = forms.TextInput(attrs = {'size': 64})
-		)
-
 class SongSaveForm_step1(forms.Form):
 	contributing_artist = forms.ModelChoiceField(
 		label = 'ContributingArtists',
@@ -130,7 +107,7 @@ class SongSaveForm_step1(forms.Form):
 
 class SongSaveForm_step2(forms.Form):
     
-    asin = forms.ModelChoiceField(queryset=Album.objects.all())
+    asin = forms.ModelChoiceField(label = 'Album Name', queryset=Album.objects.all())
     def __init__(self, *args, **kwargs):
         artistId = kwargs.pop('ContributingArtists', None)
         super(SongSaveForm_step2, self).__init__(*args, **kwargs)
@@ -154,48 +131,13 @@ class SongSaveForm_step2(forms.Form):
 		label='Genre',
 		widget = forms.TextInput(attrs = {'size': 64})
 		)
-# class SongSaveForm_step2(forms.Form):
-
-# 	asin = forms.ModelChoiceField(
-# 		label = 'Album',
-# 		queryset=Album.objects.all()
-# 		)
-
-# 	def __init__(self, *args, **kwargs):
-# 		artist = kwargs.pop('contributing_artist', None)
-#         # print artist
-#         super(SongSaveForm_step2, self).__init__(*args, **kwargs)
-
-#         if artist:
-#             self.fields['asin'].queryset = Album.objects.filter(ContributingArtists__ArtistName = artist_name)
-
-
-# 	name = forms.CharField(
-# 		label='Song Name',
-# 		widget = forms.TextInput(attrs = {'size': 64})
-# 		)
-
-# 	trackid = forms.IntegerField(
-# 		label='Track ID',
-# 		widget = forms.TextInput(attrs = {'size': 64})
-# 		)
-
-# 	composer = forms.ModelChoiceField(
-# 		label='Composer',
-# 		queryset=Artist.objects.all()
-# 		)
-
-# 	genre = forms.CharField(
-# 		label='Genre',
-# 		widget = forms.TextInput(attrs = {'size': 64})
-# 		)
 
 
 class VideoSaveForm(forms.Form):
-	song = forms.ModelChoiceField(
-		label = 'Song',
-		queryset=Song.objects.all()
-		)
+	# song = forms.ModelChoiceField(
+	# 	label = 'Song',
+	# 	queryset=Song.objects.all()
+	# 	)
 	video_type= forms.CharField(
 		label= 'Type',
 		widget = forms.TextInput(attrs = {'size': 64})
@@ -203,23 +145,25 @@ class VideoSaveForm(forms.Form):
 	url = forms.URLField(
 		label= 'URL',
 		widget = forms.TextInput(attrs = {'size': 64}))
-# class VideoSaveForm(forms.Form):
+	
+class TabSaveForm(forms.Form):
+	
+	version = forms.CharField(
+		label = 'Version',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
 
-# 	songid = forms.ModelChoiceField(
-# 		label = 'Song',
-# 		queryset=Song.objects.all()
-# 		)
-
-# 	video_type = forms.CharField(
-# 		label='Type',
-# 		widget = forms.TextInput(attrs = {'size': 64})
-# 		)
-
-# 	url = forms.CharField(
-# 		label='URL',
-# 		widget = forms.TextInput(attrs = {'size': 64})
-# 		)
-
+	instrument= forms.CharField(
+		label= 'Instrument',
+		widget = forms.TextInput(attrs = {'size': 64})
+		)
+	url = forms.URLField(
+		label= 'URL',
+		widget = forms.TextInput(attrs = {'size': 64}))
+	tab = forms.CharField(
+		label = 'ScoreSheet',
+		widget = forms.Textarea(attrs = {'width': 64, 'height': 300})
+		)
 
 class SearchForm(forms.Form):
 	query = forms.CharField(
