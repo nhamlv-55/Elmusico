@@ -276,9 +276,10 @@ def video_save_page_step2(request, song_id):
 			# Create or get link.
 			video, created = Video.objects.get_or_create(
 				SongId_id = song_id,
+				Type = form.cleaned_data['video_type'],
+				Url = form.cleaned_data['url']
 				)
-			video.Type = form.cleaned_data['video_type']
-			video.Url = form.cleaned_data['url']
+			
 
 			video.save()
 			return HttpResponseRedirect(
@@ -332,12 +333,13 @@ def tab_save_page_step2(request, song_id):
 
 			scoresheet, created = ScoreSheet.objects.get_or_create(
 				SongId_id = song_id,
-				Version = form.cleaned_data['version']
+				Version = form.cleaned_data['version'],
+				Instrument = form.cleaned_data['instrument'],
+				Url = form.cleaned_data['url'],
+				Tab = form.cleaned_data['tab']
 				)
 			
-			scoresheet.Instrument = form.cleaned_data['instrument']
-			scoresheet.Url = form.cleaned_data['url']
-			scoresheet.Tab = form.cleaned_data['tab']
+			
 
 			scoresheet.save()
 			return HttpResponseRedirect(
@@ -345,10 +347,10 @@ def tab_save_page_step2(request, song_id):
 			)
 	else:
 		form = TabSaveForm()
-	variables = RequestContext(request, {
-		'form': form
-		})
-	return render_to_response('tab_save_step2.html', variables)
+		variables = RequestContext(request, {
+			'form': form
+			})
+		return render_to_response('tab_save_step2.html', variables)
 
 
 def relation_page(request, relation_string):
