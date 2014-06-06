@@ -22,7 +22,7 @@ class Album(models.Model):
 	Label = models.TextField()
 	Genre = models.TextField()
 	def __unicode__(self):
-		return self.AlbumName
+		return '%s by %s' % (self.AlbumName, self.ContributingArtists)
 
 
 
@@ -66,7 +66,7 @@ class Member(models.Model):
 	MusicianId = models.ForeignKey(Musician, to_field = "MusicianId")
 	Role = models.TextField()
 	Time = models.DateField()
-	
+
 class Favorite(models.Model):
 	FavoriteId = models.AutoField(primary_key = True)
 	# title = models.CharField(max_length = 200)

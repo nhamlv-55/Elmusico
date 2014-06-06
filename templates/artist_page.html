@@ -19,13 +19,16 @@
 				 		{{ member.MusicianId.MusicianName }}</a> {{ member.Role }} ({{member.Time}})</li>
 			 		{% endfor %}
 			 </ul>
+			 {% if user.is_authenticated %}
+			 <a href="/search_member/{{ artist.ArtistId }}" class="add members">[Add members]</a>
+			 {% endif %}
 		{% else %}
 		{% endif %}
 		
 		<h2>Bio</h2>
 		<p>{{ artist.Bio}}</p>
 	</div>
-		
+	<div id = "Discography">
 	{% if albums %}
 		<h2>Discography</h2>
 		 <ul>
@@ -36,13 +39,16 @@
 		 </ul>
 	{% else %}
 	{% endif %}
+	{% if user.is_authenticated %}
+	<a href="/create_artist/?artist_id={{ artist.ArtistId }}"
+		class="add album">[Add albums]</a>
+	{% endif %}
+	</div>	
 
 	
 	
 	{% if user.is_authenticated %}
 	<a href="/create_artist/?artist_id={{ artist.ArtistId }}"
 		class="edit">[edit]</a>
-	<a href="/search_member/{{ artist.ArtistId }}"
-		class="add members">[add members]</a>
 	{% endif %}
 {% endblock %}

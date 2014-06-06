@@ -9,13 +9,12 @@
 		<a href="/artist/{{ contributing_artist.ArtistId}}" class="title">{{ contributing_artist.ArtistName }}</a>
 		<p>{{ artist.Status}}</p>
 	</div>
-	<div id="Clip">
-		<h2>Video</h2>
-		<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/{{demo_vid}}" allowfullscreen frameborder="0">
-		</iframe>
-	</div>
+
+	<div id = "Video">
 	{% if videos %}
 	 	<h2>Videos</h2>
+	 	<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/{{demo_vid}}" allowfullscreen frameborder="0">
+		</iframe>
 		 <ul>
 		 	{% for video in videos %}
 			 	<li><a href="{{video.Url}}">
@@ -25,6 +24,7 @@
 	{% else %}
 	 	<p>No videos found.</p>
 	{% endif %}
+	</div>
 
 	{% if tabs %}
 	 	<h2>Scoresheets</h2>
@@ -35,6 +35,6 @@
 		 		{% endfor %}
 		 </ul>
 	{% else %}
-	 	<p>No albums found.</p>
+	 	<p>No scoresheets found.</p>
 	{% endif %}
 {% endblock %}

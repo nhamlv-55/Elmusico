@@ -96,20 +96,17 @@ class AlbumSaveForm(forms.Form):
 		)
 
 class SongSaveForm_step1(forms.Form):
-	contributing_artist = forms.ModelChoiceField(
-		label = 'ContributingArtists',
-		queryset=Artist.objects.all()
+	album = forms.ModelChoiceField(
+		label = 'Album',
+		queryset=Album.objects.all()
 		)
 
 class SongSaveForm_step2(forms.Form):
     
-    asin = forms.ModelChoiceField(label = 'Album Name', queryset=Album.objects.all())
-    def __init__(self, *args, **kwargs):
-        artistId = kwargs.pop('ContributingArtists', None)
-        super(SongSaveForm_step2, self).__init__(*args, **kwargs)
-
-        if artistId:
-            self.fields['asin'].queryset = Album.objects.filter(ContributingArtists__ArtistId = artistId)
+    contributing_artist = forms.ModelChoiceField(
+    	label = 'Contributing Artists', 
+    	queryset=Artist.objects.all()
+    )
 
     name = forms.CharField(
 		label='Song Name',

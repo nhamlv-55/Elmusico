@@ -210,10 +210,10 @@ def song_save_page_step1(request):
 	if request.method == 'POST':
 		form = SongSaveForm_step1(request.POST)
 		if form.is_valid():
-			ContributingArtists = form.cleaned_data['contributing_artist'].ArtistId
-			print ContributingArtists
+			Album = form.cleaned_data['album'].AlbumId
+
 			t=HttpResponseRedirect(
-				'/create_song_step2/%s/' %ContributingArtists
+				'/create_song_step2/%s/' %Album
 			)
 			print t
 			return t
@@ -224,17 +224,17 @@ def song_save_page_step1(request):
 			})
 		return render_to_response('song_save_step1.html', variables)
 
-def song_save_page_step2(request, contributing_artist):
+def song_save_page_step2(request, album_id):
 	if request.method == 'POST':
-		form = SongSaveForm_step2(request.POST, ContributingArtists = contributing_artist)
+		form = SongSaveForm_step2(request.POST )
 		if form.is_valid():
 			print "vl"
 			# Create or get link.
 			song, created = Song.objects.get_or_create(
 				SongName=form.cleaned_data['name'],
-				AlbumId = form.cleaned_data['asin'],
+				AlbumId = Album.objects.get(AlbumId=album_id),
 				TrackId = form.cleaned_data['trackid'],
-				ContributingArtists = Artist.objects.get(ArtistId=contributing_artist),
+				ContributingArtists = form.cleaned_data['contributing_artist'],
 				Genre = form.cleaned_data['genre'],
 				Composer = form.cleaned_data['composer']
 				)
@@ -243,7 +243,7 @@ def song_save_page_step2(request, contributing_artist):
 				'/song/%s/' % song.SongId
 			)
 	else:
-		form = SongSaveForm_step2(ContributingArtists = contributing_artist)
+		form = SongSaveForm_step2()
 		variables = RequestContext(request, {
 			'form': form
 			})
@@ -518,10 +518,12 @@ def tab_page(request, score_id):
 		raise Http404('Requested scoresheet not found.')
 
 	scoresheet = tab.Tab
+	song = Song.objects.get(SongId = tab.SongId_id)
 	template = get_template('tab_page.html')
 	variables = RequestContext(request, {
 		'tab':tab,
-		'scoresheet': scoresheet
+		'scoresheet': scoresheet,
+		'song':song
 		})
 	output = template.render(variables)
 	return render_to_response('tab_page.html', variables)
