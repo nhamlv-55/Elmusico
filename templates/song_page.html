@@ -14,12 +14,24 @@
 		<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/{{demo_vid}}" allowfullscreen frameborder="0">
 		</iframe>
 	</div>
-	 {% if videos %}
+	{% if videos %}
 	 	<h2>Videos</h2>
 		 <ul>
 		 	{% for video in videos %}
 			 	<li><a href="{{video.Url}}">
 			 		{{ video.Url }}</a></li>
+		 		{% endfor %}
+		 </ul>
+	{% else %}
+	 	<p>No videos found.</p>
+	{% endif %}
+
+	{% if tabs %}
+	 	<h2>Scoresheets</h2>
+		 <ul>
+		 	{% for tab in tabs %}
+			 	<li><a href="/tab/{{tab.ScoreId}}">
+			 		Version {{ tab.Version }} for {{tab.Instrument}}</a></li>
 		 		{% endfor %}
 		 </ul>
 	{% else %}

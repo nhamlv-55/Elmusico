@@ -45,5 +45,6 @@ urlpatterns = patterns('',
     (r'^artist/(\w+)/$', artist_page),
     (r'^song/(\w+)/$', song_page),
     (r'^musician/(\w+)/$', musician_page),
+    (r'^tab/(\w+)/$', tab_page),
     url(r'^admin/', include(admin.site.urls)),
 )

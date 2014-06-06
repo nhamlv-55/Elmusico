@@ -328,19 +328,27 @@ def tab_save_page_step2(request, song_id):
 	if request.method == 'POST':
 		form = TabSaveForm(request.POST)
 		if form.is_valid():
-			print "vl"
 			# Create or get link.
+
+			scoresheet, created = ScoreSheet.objects.get_or_create(
+				SongId_id = song_id,
+				Version = form.cleaned_data['version']
+				)
+			
+			scoresheet.Instrument = form.cleaned_data['instrument']
+			scoresheet.Url = form.cleaned_data['url']
+			scoresheet.Tab = form.cleaned_data['tab']
+
+			scoresheet.save()
 			return HttpResponseRedirect(
-				'/song/%s/' % song_id
+				'/tab/%s/' % scoresheet.ScoreId
 			)
-		else:
-			print "nvl"
 	else:
 		form = TabSaveForm()
-		variables = RequestContext(request, {
-			'form': form
-			})
-		return render_to_response('tab_save_step2.html', variables)
+	variables = RequestContext(request, {
+		'form': form
+		})
+	return render_to_response('tab_save_step2.html', variables)
 
 
 def relation_page(request, relation_string):
@@ -501,6 +509,20 @@ def song_page(request, song_id):
 	output = template.render(variables)
 	return render_to_response('song_page.html', variables)
 
+def tab_page(request, score_id):
+	try:
+		tab = ScoreSheet.objects.get(ScoreId=score_id)
+	except Artist.DoesNotExist:
+		raise Http404('Requested scoresheet not found.')
+
+	scoresheet = tab.Tab
+	template = get_template('tab_page.html')
+	variables = RequestContext(request, {
+		'tab':tab,
+		'scoresheet': scoresheet
+		})
+	output = template.render(variables)
+	return render_to_response('tab_page.html', variables)
 
 def musician_page(request, musician_id):
 	groups = []

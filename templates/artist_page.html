@@ -10,6 +10,18 @@
 		<p>{{ artist.Date}}</p>
 		<h2>Current status</h2>
 		<p>{{ artist.Status}}</p>
+
+		{% if members %}
+			<h2>Members</h2>
+			 <ul>
+			 	{% for member in members %}
+				 	<li><a href="/musician/{{ member.MusicianId.MusicianId}}">
+				 		{{ member.MusicianId.MusicianName }}</a> {{ member.Role }} ({{member.Time}})</li>
+			 		{% endfor %}
+			 </ul>
+		{% else %}
+		{% endif %}
+		
 		<h2>Bio</h2>
 		<p>{{ artist.Bio}}</p>
 	</div>
@@ -25,16 +37,7 @@
 	{% else %}
 	{% endif %}
 
-	{% if members %}
-		<h2>Members</h2>
-		 <ul>
-		 	{% for member in members %}
-			 	<li><a href="/musician/{{ member.MusicianId.MusicianId}}">
-			 		{{ member.MusicianId.MusicianName }}</a> {{ member.Role }} ({{member.Time}})</li>
-		 		{% endfor %}
-		 </ul>
-	{% else %}
-	{% endif %}
+	
 	
 	{% if user.is_authenticated %}
 	<a href="/create_artist/?artist_id={{ artist.ArtistId }}"
