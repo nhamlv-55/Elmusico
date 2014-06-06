@@ -84,14 +84,24 @@ def artist_save_page(request):
 		form = ArtistSaveForm(request.POST)
 		if form.is_valid():
 			# Create or get link.
-			artist, created = Artist.objects.get_or_create(
-				ArtistName=form.cleaned_data['name'],
-				)
 
-			artist.Date=form.cleaned_data['date']
-			artist.Status=form.cleaned_data['status']
-			artist.Bio = form.cleaned_data['bio']
-			artist.Image = form.cleaned_data['image']
+			try:
+				artist= Artist.objects.get(
+					ArtistName=form.cleaned_data['name'],
+					# Date = form.cleaned_data['date']
+				)
+				artist.Date=form.cleaned_data['date']
+				artist.Status=form.cleaned_data['status']
+				artist.Bio = form.cleaned_data['bio']
+				artist.Image = form.cleaned_data['image']
+			except ObjectDoesNotExist:
+				artist, create = Artist.objects.get_or_create(
+					ArtistName=form.cleaned_data['name'],
+					Date=form.cleaned_data['date'],
+					Status=form.cleaned_data['status'],
+					Bio = form.cleaned_data['bio'],
+					Image = form.cleaned_data['image']
+					)			
 			
 			artist.save()
 			return HttpResponseRedirect(
