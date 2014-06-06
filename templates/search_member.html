@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Search {% endblock %}
+{% block head %}Search {% endblock %}
+{% block content %}
+<form id="search-form" method="get" action=".">
+	{{ form.as_p }}
+	<input type="submit" value="search" />
+</form>
+<div id="search-results">
+	{% if show_results %}
+		{% for musician in musicians %}
+		<li>
+		<a href="/relation/{{artist_id}}_{{ musician.MusicianId }}" class="title">
+			{{ musician.MusicianName }}</a>
+			<br />
+			{% if show_tags %}
+			Tags:
+			{% if musician.tag_set.all %}
+			<ul class="tags">
+				{% for tag in musician.tag_set.all %}
+				<li>{{ tag.name }}</li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			None.
+			{% endif %}
+			<br />
+			{% endif %}
+			{% if show_user %}
+			Posted by:
+			<a href="/user/{{ musician.user.username }}/"
+			class="username">
+			{{ musician.user.username }}</a>
+			{% endif %}
+		</li>
+		{% endfor %}
+			{% endif %}
+</div>
+{% endblock %}

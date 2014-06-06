@@ -34,11 +34,6 @@ class RegistrationForm(forms.Form):
 				return username
 				raise forms.ValidationError('Username is already taken.')
 
-# class Video(models.Model):
-# 	VideoId = models.IntegerField(primary_key = True)
-# 	SongId = models.ForeignKey(Song, to_field = "SongId")
-# 	Type = models.TextField()
-# 	Url = models.URLField()
 
 class ArtistSaveForm(forms.Form):
 	name = forms.CharField(
@@ -62,6 +57,7 @@ class ArtistSaveForm(forms.Form):
 		label = 'Bio',
 		widget = forms.Textarea(attrs={'cols':64,'rows':10})
 		)
+
 	
 class MusicianSaveForm(forms.Form):
 	name = forms.CharField(
@@ -132,12 +128,16 @@ class SongSaveForm_step2(forms.Form):
 		widget = forms.TextInput(attrs = {'size': 64})
 		)
 
+class MemberSaveForm(forms.Form):
+	time=forms.DateField(
+		label = "Time",
+		widget = forms.DateInput(attrs = {'size': 64})
+		)
+	role = forms.CharField(
+		label = "Role",
+		widget = forms.TextInput(attrs = {'size': 64}))
 
 class VideoSaveForm(forms.Form):
-	# song = forms.ModelChoiceField(
-	# 	label = 'Song',
-	# 	queryset=Song.objects.all()
-	# 	)
 	video_type= forms.CharField(
 		label= 'Type',
 		widget = forms.TextInput(attrs = {'size': 64})

@@ -6,20 +6,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render_to_response, render, get_object_or_404
 from bookmarks.forms import *
 
-# def main_page(request):
-# 	# to load the main_page.html template
-# 	template = get_template('main_page.html')
-# 	# Set the variable in the template
-# 	variables = Context({
-# 		'head_title': 'Main page',
-# 		'page_title': 'Welcome to Elmusico',
-# 		'page_body': 'Blah blah blah blah blah'
-# 		})
-# 	#pass the variables and create a HTML output
-# 	output = template.render(variables)
-# 	#return it
-# 	return HttpResponse(output)
-
 def main_page(request):
 	return render_to_response(
 		'main_page.html',
@@ -172,14 +158,23 @@ def album_save_page(request):
 		form = AlbumSaveForm(request.POST)
 		if form.is_valid():
 			# Create or get link.
-			album, created = Album.objects.get_or_create(
-				AlbumName=form.cleaned_data['name'],
-				)
-			album.ContributingArtists = form.cleaned_data['contributing_artist']
-			album.ReleaseDate=form.cleaned_data['release_date']
-			album.Label = form.cleaned_data['label']
-			album.Genre = form.cleaned_data['genre']
+			try:
+				album = Album.objects.get(
+					AlbumName=form.cleaned_data['name'],
+					ContributingArtists = form.cleaned_data['contributing_artist']
+					)
+				album.ReleaseDate=form.cleaned_data['release_date']
+				album.Label = form.cleaned_data['label']
+				album.Genre = form.cleaned_data['genre']
+			except ObjectDoesNotExist:
+				album, create = Album.objects.get_or_create(
+					AlbumName = form.cleaned_data['name'],
+					ContributingArtists = form.cleaned_data['contributing_artist'],
+					ReleaseDate = form.cleaned_data['release_date'],
+					Label = form.cleaned_data['label'],
+					Genre = form.cleaned_data['genre']
 
+					)
 			album.save()
 			return HttpResponseRedirect(
 				'/album/%s/' % album.AlbumId
@@ -348,6 +343,36 @@ def tab_save_page_step2(request, song_id):
 		return render_to_response('tab_save_step2.html', variables)
 
 
+def relation_page(request, relation_string):
+	print relation_string
+	artist_id, musician_id = relation_string.split("_")
+
+	# ------------------------------------
+	if request.method == 'POST':
+		form = MemberSaveForm(request.POST)
+		if form.is_valid():
+			# Create or get link.
+			member, created = Member.objects.get_or_create(
+				ArtistId = Artist.objects.get(ArtistId=artist_id),
+				MusicianId = Musician.objects.get(MusicianId = musician_id),
+				Role=form.cleaned_data['role'],
+				Time = form.cleaned_data['time']
+				)
+			member.save()
+			return HttpResponseRedirect(
+				'/artist/%s/' % artist_id
+			)
+	# ------------------------------------
+	else:
+		form = MemberSaveForm()
+
+	variables = RequestContext(request, {
+		'form': form
+		})
+	return render_to_response('member_save.html', variables)
+
+
+
 def search_page(request):
 	form = SearchForm()
 	artists = []
@@ -374,8 +399,27 @@ def search_page(request):
 		})
 	return render_to_response('search.html', variables)
 
+def search_member_page(request, artist_id):
+	form = SearchForm()
+	musicians =[]
+
+	show_results = False
+	if request.GET.has_key('query'):
+		show_results = True
+		query = request.GET['query'].strip()
+		if query:
+			form = SearchForm({'query' : query})
+			musicians = Musician.objects.filter (MusicianName__icontains=query)[:10]
+	variables = RequestContext(request, { 'form': form,
+		'musicians': musicians,
+		'show_results': show_results,
+		'artist_id':artist_id
+		})
+	return render_to_response('search_member.html', variables)
+
 def artist_page(request, artist_id):
 	albums=[]
+	members=[]
 	try:
 		# print username
 		artist = Artist.objects.get(ArtistId=artist_id)
@@ -385,17 +429,16 @@ def artist_page(request, artist_id):
 
 
 	artist_name = artist.ArtistName
-	#The automatically generated JOIN equivalent. To get all 
-	# scoresheet that an user favor
-	# ScoreSheetList = user.favorite_set.all()
-	albums = Album.objects.filter(ContributingArtists__ArtistName = artist_name)
-	# debut = artist.
 
+	albums = Album.objects.filter(ContributingArtists__ArtistName = artist_name)
+
+	members = Member.objects.filter(ArtistId_id__ArtistId = artist.ArtistId)
 	template = get_template('artist_page.html')
 	variables = RequestContext(request, {
 		'artist_name': artist_name,
 		'albums': albums,
-		'artist': artist
+		'artist': artist,
+		'members': members
 		})
 
 	output = template.render(variables)
@@ -457,3 +500,21 @@ def song_page(request, song_id):
 
 	output = template.render(variables)
 	return render_to_response('song_page.html', variables)
+
+
+def musician_page(request, musician_id):
+	groups = []
+	try:
+		musician = Musician.objects.get(MusicianId = musician_id)
+	except:
+		raise Http404('Requested artist not found.')
+
+	groups = Member.objects.filter(MusicianId_id__MusicianId = musician.MusicianId)
+	print groups[0].ArtistId
+	template = get_template('musician_page.html')
+	variables = RequestContext(request, {
+		'groups': groups
+		})
+
+	output = template.render(variables)
+	return render_to_response('musician_page.html', variables)

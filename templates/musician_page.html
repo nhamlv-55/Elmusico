@@ -1,0 +1,19 @@
+ {% extends "base.html" %}
+ {% block title %}{{ musician_name }}{% endblock %}
+ {% block head %}{{ musician_name }}{% endblock %}
+ {% block content %}
+
+	{% if groups %}
+		<h2>Assosiated groups:</h2>
+		 <ul>
+		 	{% for group in groups %}
+			 	<li><a href="/artist/{{ group.ArtistId.ArtistId }}">
+			 		{{ group.ArtistId }}</a>  ({{group.Time}}) </li>
+		 		{% endfor %}
+		 </ul>
+	{% else %}
+	{% endif %}
+	
+	{% if user.is_authenticated %}
+	{% endif %}
+{% endblock %}

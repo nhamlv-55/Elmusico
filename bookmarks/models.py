@@ -66,7 +66,7 @@ class Member(models.Model):
 	MusicianId = models.ForeignKey(Musician, to_field = "MusicianId")
 	Role = models.TextField()
 	Time = models.DateField()
-
+	
 class Favorite(models.Model):
 	FavoriteId = models.AutoField(primary_key = True)
 	# title = models.CharField(max_length = 200)
