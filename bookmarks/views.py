@@ -66,6 +66,7 @@ def register_page(request):
 			)
 
 def artist_save_page(request):
+	create_or_edit ="Create"
 	if request.method == 'POST':
 		form = ArtistSaveForm(request.POST)
 		if form.is_valid():
@@ -94,6 +95,7 @@ def artist_save_page(request):
 				'/artist/%s/' % artist.ArtistId
 			)
 	elif request.GET.has_key('artist_id'):
+		create_or_edit = "Edit"
 		artist_id = request.GET['artist_id']
 		print "elif"
 		try:
@@ -115,11 +117,13 @@ def artist_save_page(request):
 	else:
 		form = ArtistSaveForm()
 	variables = RequestContext(request, {
-		'form': form
+		'form': form,
+		'create_or_edit': create_or_edit
 		})
 	return render_to_response('artist_save.html', variables, context_instance = RequestContext(request))
 
 def musician_save_page(request):
+	create_or_edit ="Create"
 	if request.method == 'POST':
 		form = MusicianSaveForm(request.POST)
 		if form.is_valid():
@@ -134,6 +138,7 @@ def musician_save_page(request):
 			)
 	elif request.GET.has_key('musician_id'):
 		musician_id = request.GET['musician_id']
+		create_or_edit = "Edit"
 		print "elif"
 		try:
 			musician = Musician.objects.get(MusicianId=musician_id)
@@ -149,11 +154,13 @@ def musician_save_page(request):
 		form = MusicianSaveForm()
 
 	variables = RequestContext(request, {
-		'form': form
+		'form': form,
+		'create_or_edit': create_or_edit
 		})
 	return render_to_response('musician_save.html', variables)
 
 def album_save_page(request):
+	create_or_edit ="Create"
 	if request.method == 'POST':
 		form = AlbumSaveForm(request.POST)
 		if form.is_valid():
@@ -181,6 +188,7 @@ def album_save_page(request):
 			)
 	elif request.GET.has_key('album_id'):
 		album_id = request.GET['album_id']
+		create_or_edit = "Edit"
 		print "elif"
 		try:
 			album = Album.objects.get(AlbumId=album_id)
@@ -202,7 +210,8 @@ def album_save_page(request):
 	else:
 		form = AlbumSaveForm()
 	variables = RequestContext(request, {
-		'form': form
+		'form': form,
+		'create_or_edit': create_or_edit
 		})
 	return render_to_response('album_save.html', variables)
 
@@ -539,6 +548,7 @@ def musician_page(request, musician_id):
 	print groups[0].ArtistId
 	template = get_template('musician_page.html')
 	variables = RequestContext(request, {
+		'musician': musician,
 		'groups': groups
 		})
 

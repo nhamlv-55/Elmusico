@@ -1,7 +1,9 @@
  {% extends "base.html" %}
- {% block title %}{{ musician_name }}{% endblock %}
- {% block head %}{{ musician_name }}{% endblock %}
+ {% block title %}{{ musician.MusicianName }}{% endblock %}
+ {% block head %}{{ musician.MusicianName }}{% endblock %}
  {% block content %}
+
+
 
 	{% if groups %}
 		<h2>Assosiated groups:</h2>

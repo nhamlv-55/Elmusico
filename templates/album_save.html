@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Create an album{% endblock %}
-{% block head %}Create an album{% endblock %}
+{% block title %}{{create_or_edit}} an album{% endblock %}
+{% block head %}{{create_or_edit}} an album{% endblock %}
 {% block content %}
 <form method="post" action=".">{% csrf_token %}
 {{ form.as_p }}
