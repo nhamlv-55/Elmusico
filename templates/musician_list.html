@@ -1,0 +1,15 @@
+
+{% if musicians %}
+<h1>Matched musicians</h1>
+<ul class="musicians">
+	{% for musician in musicians %}
+	<li>
+	<a href="/musician/{{ musician.MusicianId}}" class="title">
+			{{ musician.MusicianName}} </a>
+			
+		</li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<p>No musicians found.</p>
+	{% endif %}

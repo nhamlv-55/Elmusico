@@ -397,7 +397,7 @@ def search_page(request):
 	artists = []
 	albums = []
 	songs = []
-
+	musicians = []
 	show_results = False
 	if request.GET.has_key('query'):
 		show_results = True
@@ -407,11 +407,13 @@ def search_page(request):
 			artists = Artist.objects.filter (ArtistName__icontains=query)[:10]
 			albums = Album.objects.filter (AlbumName__icontains=query)[:10]
 			songs = Song.objects.filter(SongName__icontains=query)[:10]
+			musicians = Musician.objects.filter(MusicianName__icontains =query)[:10]
 		print songs, artists, albums
 	variables = RequestContext(request, { 'form': form,
 		'artists': artists,
 		'albums': albums,
 		'songs': songs,
+		'musicians': musicians,
 		'show_results': show_results,
 		# 'show_tags': True,
 		# 'show_user': True
